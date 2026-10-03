@@ -35125,7 +35125,10 @@ def test_render_api_page_single_object_renders_title_once():
         os.environ.pop("GITHUB_REPO_URL", None)
         rendered = str(RenderAPIPage(node=page, level=1))
 
-    assert 'title: "[my_func()]' in rendered
+    metadata = _parse_yaml(rendered.split("---", 2)[1])
+    assert metadata["title"] == (
+        "[my_func()]{.doc-object-name .doc-function .doc-label .doc-label-function}"
+    )
     assert "\n# [my_func()]" not in rendered
     # Body content survives despite the suppressed inner title.
     assert "```python\nmy_func()" in rendered
@@ -35153,7 +35156,10 @@ def test_render_api_page_renders_body_header_at_level_2():
         os.environ.pop("GITHUB_REPO_URL", None)
         rendered = str(RenderAPIPage(node=page, level=2))
 
-    assert 'title: "[my_func()]' in rendered
+    metadata = _parse_yaml(rendered.split("---", 2)[1])
+    assert metadata["title"] == (
+        "[my_func()]{.doc-object-name .doc-function .doc-label .doc-label-function}"
+    )
     assert "\n## [my_func()]" in rendered
 
 
